@@ -26,9 +26,9 @@ def predict():
     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
     rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    mp_hands = mp.solutions.hands
-    hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.7)
-    # mp_draw = mp.solutions.drawing_utils
+    # mp_hands = mp.solutions.hands
+    # hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.7)
+    # # mp_draw = mp.solutions.drawing_utils
 
     results = hands.process(rgb)
     

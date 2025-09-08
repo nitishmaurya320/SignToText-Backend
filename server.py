@@ -6,7 +6,7 @@ import os
 import mediapipe as mp
 from flask_cors import CORS  
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://sign-to-text-beta.vercel.app"}})  
+CORS(app)  
 # Load model
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)

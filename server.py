@@ -6,7 +6,7 @@ import os
 import mediapipe as mp
 from flask_cors import CORS  
 app = Flask(__name__)
-CORS(app, origins=["https://sign-to-text-beta.vercel.app"])  
+CORS(app, resources={r"/*": {"origins": "https://sign-to-text-beta.vercel.app"}})  
 # Load model
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
@@ -50,4 +50,4 @@ def predict():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render देगा अपना port
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port,debug=False)

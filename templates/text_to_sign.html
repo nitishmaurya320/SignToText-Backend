@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Sign</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  h1 { margin-bottom: 20px; }
+  input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    font-size: 1rem;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin-left: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  button:hover { background-color: #45a049; }
+  .sign-images {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  .sign-images img {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: white;
+  }
+</style>
+</head>
+<body>
+<h1>Text → Sign + Audio</h1>
+
+<form method="POST" action="/text-to-sign">
+  <input type="text" name="text" placeholder="Enter text here" value="{{ text }}">
+  <button type="submit">Convert</button>
+</form>
+
+<button id="speakBtn">🔊 Speak Text</button>
+
+<div class="sign-images">
+  {% for sign in signs %}
+    <img src="{{ url_for('static', filename=sign) }}" alt="Sign">
+  {% endfor %}
+</div>
+
+<script>
+  const speakBtn = document.getElementById('speakBtn');
+  speakBtn.addEventListener('click', () => {
+    const text = "{{ text }}";
+    if (!text) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // you can change language if needed
+    speechSynthesis.speak(utterance);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Language Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px 40px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .btn {
+        padding: 15px 30px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>  
+  <h1>Welcome to Sign Language Converter</h1>
+
+  <div class="button-container">
+    <a href="/text-to-sign" class="btn">Text → Sign</a>
+    <a href="/sign-to-text" class="btn">Sign → Text</a>
+  </div>
+</body>
+</html>

@@ -8,41 +8,109 @@
   body {
     font-family: Arial, sans-serif;
     text-align: center;
-    padding: 10px;
-    background-color: #f9f9f9;
+    padding: 20px;
+    background-color: #f0f4f8;
   }
-  h1 { margin-bottom: 20px; }
+
+  h1 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
   input[type="text"] {
-    width: 300px;
-    padding: 10px;
+    width: 80%;
+    max-width: 400px;
+    padding: 10px 15px;
     font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    margin-right: 10px;
   }
+
   button {
     padding: 10px 20px;
     font-size: 1rem;
-    margin-left: 10px;
     margin-top: 10px;
     cursor: pointer;
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: 0.3s;
   }
-  button:hover { background-color: #45a049; }
+
+  button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+
   .sign-images {
     margin-top: 30px;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* wrap words */
     justify-content: center;
-    gap: 15px;
+    gap: 50px; /* gap between words */
   }
-  .sign-images img {
-    width: 100px;
-    height: 100px;
-    border: 2px solid #333;
-    border-radius: 5px;
+
+.word-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center letters + punctuation */
+  margin-bottom: 10px;
+  gap:4px /* space between words */
+}
+
+.word {
+  display: flex;
+  gap: 4px; /* space between letters */
+}
+
+.letter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.letter-label {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.punctuation {
+  font-size: 2.5rem;   /* BIG punctuation */
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-top: 10px;     /* space below letters */
+}
+
+
+ 
+
+  .letter-container img {
+    width: 90px;
+    height: 90px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
     padding: 5px;
-    background-color: white;
+    background-color: #fafafa;
+    object-fit: contain;
+  }
+
+  
+ 
+
+  @media screen and (max-width: 500px) {
+    .letter-container img {
+      width: 60px;
+      height: 60px;
+    }
+    .letter-label {
+      font-size: 0.8rem;
+    }
   }
 </style>
 </head>
@@ -50,27 +118,63 @@
 <h1>Text → Sign + Audio</h1>
 
 <form method="POST" action="/text-to-sign">
-  <input type="text" name="text" placeholder="Enter text here" value="{{ text }}">
+  <input type="text" name="text" id="textInput" placeholder="Enter text here" value="{{ text }}">
   <button type="submit">Convert</button>
 </form>
 
-<button id="speakBtn">🔊 Speak Text</button>
+<div style="margin-top: 15px;">
+  <button id="speakBtn">🔊 Speak Text</button>
+  <button id="micBtn">🎤 Speak to Convert</button>
+</div>
 
 <div class="sign-images">
-  {% for sign in signs %}
-    <img src="{{ url_for('static', filename=sign) }}" alt="Sign">
+  {% for word in words_signs %}
+    <div class="word-container">
+      <div class="word">
+        {% for s in word %}
+          <div class="letter-container">
+            <img src="{{ url_for('static', filename=s) }}" alt="Sign">
+            <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endfor %}
 </div>
 
+
+
+
 <script>
+  const textInput = document.getElementById('textInput');
+
+  // Text-to-Speech
   const speakBtn = document.getElementById('speakBtn');
   speakBtn.addEventListener('click', () => {
-    const text = "{{ text }}";
+    const text = textInput.value;
     if (!text) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; // you can change language if needed
+    utterance.lang = 'en-US';
     speechSynthesis.speak(utterance);
   });
+
+  // Speech-to-Text
+  const micBtn = document.getElementById('micBtn');
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-US';
+
+  micBtn.addEventListener('click', () => {
+    recognition.start();
+  });
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    textInput.value = transcript.toUpperCase(); // auto-fill input, uppercase for signs
+  };
+
+  recognition.onerror = (event) => {
+    alert("Error occurred in speech recognition: " + event.error);
+  };
 </script>
 
 </body>

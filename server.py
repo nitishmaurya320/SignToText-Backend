@@ -52,10 +52,13 @@ def predict():
 # Dictionary of valid English words
 valid_words = set(words.words())
 
-# Letters → sign images
+# Letters → sign images (A-Z)
 sign_dict = {chr(i): f"signs/{chr(i)}.png" for i in range(65, 91)}
 
-# Punctuation → images
+# Numbers → sign images (0-9)
+number_dict = {str(i): f"signs/{i}.png" for i in range(10)}
+
+# Punctuation → sign images
 punct_dict = {
     ".": "signs/fullstop.png",
     ",": "signs/comma.png",
@@ -63,30 +66,71 @@ punct_dict = {
     "?": "signs/question.png"
 }
 
+# Optional: create a "space" placeholder image for spacing, or just leave empty string
+space_sign = "signs/space.png"  # you can create a blank image called space.png
+
 @app.route("/text-to-sign", methods=["GET", "POST"])
 def text_to_sign():
     if request.method == "POST":
-        text = request.form.get("text", "").upper()
+        text = request.form.get("text", "")
 
         words_signs = []
         invalid_words = []
 
-        for w in text.split():
-            word_clean = w.strip(".,!?")  # remove punctuation for checking validity
+        i = 0
+        tokens = text.split()
+        while i < len(tokens):
+            w = tokens[i]
 
-            if word_clean.lower() in valid_words:
+            # Check if a phrase starts with a slash
+            if w.startswith("/"):
+                # Collect all tokens until closing slash
+                phrase_tokens = [w[1:]]  # remove starting slash
+                i += 1
+                while i < len(tokens):
+                    token = tokens[i]
+                    if token.endswith("/"):
+                        phrase_tokens.append(token[:-1])  # remove ending slash
+                        break
+                    else:
+                        phrase_tokens.append(token)
+                    i += 1
+
+                phrase = ' '.join(phrase_tokens).upper()
                 signs = []
-                for ch in w:
-                    if ch in sign_dict:
+                for ch in phrase:
+                    if ch == ' ':
+                        signs.append(space_sign)  # keep a visual space
+                    elif ch in sign_dict:
                         signs.append(sign_dict[ch])
+                    elif ch in number_dict:
+                        signs.append(number_dict[ch])
                     elif ch in punct_dict:
                         signs.append(punct_dict[ch])
                 if signs:
                     words_signs.append(signs)
+
             else:
-                # Instead of ignoring, mark as incorrect
-                words_signs.append([f"Incorrect word: {w}"])
-                invalid_words.append(w)
+                # Regular word handling
+                word_clean = ''.join([ch for ch in w if ch.isalpha()])
+                digits_only = ''.join([ch for ch in w if ch.isdigit()])
+                punct_only = ''.join([ch for ch in w if ch in punct_dict])
+
+                if (word_clean.lower() in valid_words) or digits_only or punct_only:
+                    signs = []
+                    for ch in w.upper():
+                        if ch in sign_dict:
+                            signs.append(sign_dict[ch])
+                        elif ch in number_dict:
+                            signs.append(number_dict[ch])
+                        elif ch in punct_dict:
+                            signs.append(punct_dict[ch])
+                    if signs:
+                        words_signs.append(signs)
+                else:
+                    words_signs.append([f"Incorrect word: {w}"])
+                    invalid_words.append(w)
+            i += 1
 
         session["words_signs"] = words_signs
         session["text"] = text
@@ -98,6 +142,8 @@ def text_to_sign():
     invalid_words = session.get("invalid", [])
     return render_template("text_to_sign.html", words_signs=words_signs, text=text, invalid=invalid_words)
 
+  
+        
 # ---------------- SIGN → TEXT PAGE ---------------- #
 @app.route("/sign-to-text")
 def sign_to_text():

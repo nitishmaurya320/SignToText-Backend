@@ -27,6 +27,12 @@
     outline: none;
     margin-right: 10px;
   }
+  .incorrect {
+  color: red;
+  font-weight: bold;
+  margin: 10px;
+  text-align: center;
+}
 
   button {
     padding: 10px 20px;
@@ -118,6 +124,8 @@
 <h1>Text → Sign + Audio</h1>
 
 <form method="POST" action="/text-to-sign">
+  
+
   <input type="text" name="text" id="textInput" placeholder="Enter text here" value="{{ text }}">
   <button type="submit">Convert</button>
 </form>
@@ -128,19 +136,24 @@
 </div>
 
 <div class="sign-images">
-  {% for word in words_signs %}
-    <div class="word-container">
-      <div class="word">
-        {% for s in word %}
+  {% for word_signs in words_signs %}
+    <div class="word">
+      {% if word_signs[0].startswith("Incorrect word") %}
+        <div class="incorrect">{{ word_signs[0] }}</div>
+      {% else %}
+        {% for s in word_signs %}
           <div class="letter-container">
             <img src="{{ url_for('static', filename=s) }}" alt="Sign">
             <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
           </div>
         {% endfor %}
-      </div>
+      {% endif %}
     </div>
   {% endfor %}
 </div>
+
+
+
 
 
 

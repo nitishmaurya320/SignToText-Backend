@@ -3,8 +3,13 @@ import pickle
 import numpy as np
 import cv2
 import os
+import nltk
 import mediapipe as mp
 from flask_cors import CORS
+from nltk.corpus import words
+
+# Download word corpus (first time only)
+nltk.download("words", quiet=True)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
@@ -43,11 +48,14 @@ def predict():
         return jsonify({"error": "No hand detected"})
 
 # ---------------- TEXT → SIGN ---------------- #
-# Letters
+
+# Dictionary of valid English words
+valid_words = set(words.words())
+
+# Letters → sign images
 sign_dict = {chr(i): f"signs/{chr(i)}.png" for i in range(65, 91)}
-# Punctuation
-# Add punctuation mapping
-# Mapping punctuation → images
+
+# Punctuation → images
 punct_dict = {
     ".": "signs/fullstop.png",
     ",": "signs/comma.png",
@@ -59,31 +67,36 @@ punct_dict = {
 def text_to_sign():
     if request.method == "POST":
         text = request.form.get("text", "").upper()
-        words_signs = []  # list of words, each word = list of image paths
-        word = []
 
-        for ch in text:
-            if ch == " ":
-                if word:
-                    words_signs.append(word)
-                    word = []
-            elif ch in sign_dict:
-                word.append(sign_dict[ch])
-            elif ch in punct_dict:
-                word.append(punct_dict[ch])
+        words_signs = []
+        invalid_words = []
 
-        # Add last word
-        if word:
-            words_signs.append(word)
+        for w in text.split():
+            word_clean = w.strip(".,!?")  # remove punctuation for checking validity
+
+            if word_clean.lower() in valid_words:
+                signs = []
+                for ch in w:
+                    if ch in sign_dict:
+                        signs.append(sign_dict[ch])
+                    elif ch in punct_dict:
+                        signs.append(punct_dict[ch])
+                if signs:
+                    words_signs.append(signs)
+            else:
+                # Instead of ignoring, mark as incorrect
+                words_signs.append([f"Incorrect word: {w}"])
+                invalid_words.append(w)
 
         session["words_signs"] = words_signs
         session["text"] = text
+        session["invalid"] = invalid_words
         return redirect(url_for("text_to_sign"))
 
     words_signs = session.get("words_signs", [])
     text = session.get("text", "")
-    return render_template("text_to_sign.html", words_signs=words_signs, text=text)
-
+    invalid_words = session.get("invalid", [])
+    return render_template("text_to_sign.html", words_signs=words_signs, text=text, invalid=invalid_words)
 
 # ---------------- SIGN → TEXT PAGE ---------------- #
 @app.route("/sign-to-text")

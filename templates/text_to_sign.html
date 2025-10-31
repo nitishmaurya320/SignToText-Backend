@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Text to Sign</title>
+
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -25,14 +26,14 @@
     border: 2px solid #ccc;
     border-radius: 8px;
     outline: none;
-    margin-right: 10px;
   }
+
   .incorrect {
-  color: red;
-  font-weight: bold;
-  margin: 10px;
-  text-align: center;
-}
+    color: red;
+    font-weight: bold;
+    margin: 10px;
+    text-align: center;
+  }
 
   button {
     padding: 10px 20px;
@@ -52,49 +53,48 @@
     transform: translateY(-2px);
   }
 
+  /* Container for all words */
   .sign-images {
     margin-top: 30px;
     display: flex;
-    flex-wrap: wrap; /* wrap words */
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 50px; /* gap between words */
+    gap: 50px;
   }
 
-.word-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* center letters + punctuation */
-  margin-bottom: 10px;
-  gap:4px /* space between words */
-}
+  /* Single word block */
+  .word-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
 
-.word {
-  display: flex;
-  gap: 4px; /* space between letters */
-}
+  /* letters row */
+  .letter-row {
+    display: flex;
+    gap: 6px;
+  }
 
-.letter-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .letter-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-.letter-label {
-  margin-top: 5px;
-  font-weight: bold;
-  font-size: 1rem;
-}
+  .letter-label {
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+  }
 
-.punctuation {
-  font-size: 2.5rem;   /* BIG punctuation */
-  font-weight: bold;
-  text-align: center;
-  color: #333;
-  margin-top: 10px;     /* space below letters */
-}
-
-
- 
+  /* Big punctuation */
+  .punctuation {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+  }
 
   .letter-container img {
     width: 90px;
@@ -105,9 +105,6 @@
     background-color: #fafafa;
     object-fit: contain;
   }
-
-  
- 
 
   @media screen and (max-width: 500px) {
     .letter-container img {
@@ -120,12 +117,12 @@
   }
 </style>
 </head>
+
 <body>
+
 <h1>Text → Sign + Audio</h1>
 
 <form method="POST" action="/text-to-sign">
-  
-
   <input type="text" name="text" id="textInput" placeholder="Enter text here" value="{{ text }}">
   <button type="submit">Convert</button>
 </form>
@@ -135,35 +132,55 @@
   <button id="micBtn">🎤 Speak to Convert</button>
 </div>
 
+<!-- SIGN OUTPUT AREA -->
 <div class="sign-images">
-  {% for word_signs in words_signs %}
-    <div class="word">
-      {% if word_signs[0].startswith("Incorrect word") %}
-        <div class="incorrect">{{ word_signs[0] }}</div>
-      {% else %}
-        {% for s in word_signs %}
-          <div class="letter-container">
-            <img src="{{ url_for('static', filename=s) }}" alt="Sign">
-            <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
-          </div>
-        {% endfor %}
-      {% endif %}
-    </div>
+
+  {% for item in words_signs %}
+
+    <!-- ✅ WORD VIDEO -->
+    {% if item.type == "word_video" %}
+      <div class="word-container">
+        <h3>{{ item.word }}</h3>
+        <iframe width="560" height="315"
+  src="{{ item.video }}?autoplay=1&mute=1"
+  title="YouTube video player" frameborder="0"
+  allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+
+      </div>
+    {% endif %}
+
+    <!-- ✅ INVALID WORD -->
+    {% if item.type == "invalid" %}
+      <div class="incorrect">Incorrect word: {{ item.word }}</div>
+    {% endif %}
+
+    <!-- ✅ LETTERS SIGNS -->
+    {% if item.type == "letters" %}
+      <div class="word-container">
+        <div class="letter-row">
+          {% for s in item.letters %}
+            <div class="letter-container">
+              <img src="{{ url_for('static', filename=s) }}" alt="Sign">
+              <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
   {% endfor %}
+
 </div>
 
 
 
-
-
-
-
+<!-- JAVASCRIPT -->
 <script>
   const textInput = document.getElementById('textInput');
 
-  // Text-to-Speech
-  const speakBtn = document.getElementById('speakBtn');
-  speakBtn.addEventListener('click', () => {
+  // ✅ Text-to-Speech
+  document.getElementById('speakBtn').addEventListener('click', () => {
     const text = textInput.value;
     if (!text) return;
     const utterance = new SpeechSynthesisUtterance(text);
@@ -171,7 +188,7 @@
     speechSynthesis.speak(utterance);
   });
 
-  // Speech-to-Text
+  // ✅ Speech-to-Text
   const micBtn = document.getElementById('micBtn');
   const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
   recognition.lang = 'en-US';
@@ -182,11 +199,11 @@
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    textInput.value = transcript.toUpperCase(); // auto-fill input, uppercase for signs
+    textInput.value = transcript.toUpperCase(); 
   };
 
   recognition.onerror = (event) => {
-    alert("Error occurred in speech recognition: " + event.error);
+    alert("Speech recognition error: " + event.error);
   };
 </script>
 

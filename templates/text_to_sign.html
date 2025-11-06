@@ -105,6 +105,12 @@
     background-color: #fafafa;
     object-fit: contain;
   }
+  .cont{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+  }
 
   @media screen and (max-width: 500px) {
     .letter-container img {
@@ -137,41 +143,60 @@
 
   {% for item in words_signs %}
 
-    <!-- ✅ WORD VIDEO -->
-    {% if item.type == "word_video" %}
-      <div class="word-container">
-        <h3>{{ item.word }}</h3>
-        <iframe width="560" height="315"
-  src="{{ item.video }}?autoplay=1&mute=1"
-  title="YouTube video player" frameborder="0"
-  allow="autoplay; encrypted-media" allowfullscreen>
-</iframe>
+    <div class="word-container">
+      <h3>{{ item.word }}</h3>
 
-      </div>
-    {% endif %}
+      {% if item.video %}
+        <!-- ✅ Keep word video + signs inside SAME column -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
 
-    <!-- ✅ INVALID WORD -->
-    {% if item.type == "invalid" %}
-      <div class="incorrect">Incorrect word: {{ item.word }}</div>
-    {% endif %}
+          <!-- ✅ Word Video -->
+          <div class="cont">
+            <iframe width="300" height="200"
+              src="{{ item.video }}?autoplay=1&mute=1"
+              title="YouTube video player"
+              frameborder="0"
+              allow="autoplay; encrypted-media"
+              allowfullscreen>
+            </iframe>
+          
 
-    <!-- ✅ LETTERS SIGNS -->
-    {% if item.type == "letters" %}
-      <div class="word-container">
-        <div class="letter-row">
-          {% for s in item.letters %}
-            <div class="letter-container">
-              <img src="{{ url_for('static', filename=s) }}" alt="Sign">
-              <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
-            </div>
-          {% endfor %}
+          <!-- ✅ Letter signs (below video) -->
+          <div class="letter-row">
+            {% for s in item.letters %}
+              <div class="letter-container">
+                <img src="{{ url_for('static', filename=s) }}" alt="Sign">
+                <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
+              </div>
+            {% endfor %}
+          </div>
+          </div>
+
         </div>
-      </div>
-    {% endif %}
+      {% else %}
+
+        {% if item.type == "invalid" %}
+          <div class="incorrect">Incorrect word: {{ item.word }}</div>
+        {% else %}
+          <div class="letter-row">
+            {% for s in item.letters %}
+              <div class="letter-container">
+                <img src="{{ url_for('static', filename=s) }}" alt="Sign">
+                <span class="letter-label">{{ s.split('/')[-1].split('.')[0] }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      {% endif %}
+
+    </div>
 
   {% endfor %}
 
 </div>
+
+
 
 
 

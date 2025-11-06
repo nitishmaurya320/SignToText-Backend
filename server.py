@@ -107,13 +107,23 @@ def text_to_sign():
             UPPER_WORD = word_clean.upper()
 
             if UPPER_WORD in word_video_dict:
-                words_signs.append({
-                    "type": "word_video",
-                    "word": UPPER_WORD,
-                    "video": word_video_dict[UPPER_WORD]
-                })
-                i += 1
-                continue
+
+                    letter_signs = []
+                    for ch in UPPER_WORD:
+                        if ch in sign_dict:
+                            letter_signs.append(sign_dict[ch])
+
+                    words_signs.append({
+                        "type": "word_with_video_and_letters",
+                        "word": UPPER_WORD,
+                        "video": word_video_dict[UPPER_WORD],
+                        "letters": letter_signs
+                    })
+
+                    i += 1
+                    continue    
+
+
 
             # ✅ Normal letters fallback
             word_clean = ''.join([ch for ch in w if ch.isalpha()])

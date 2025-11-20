@@ -17,35 +17,35 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 # Enable CORS
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# ---------------- SIGN → TEXT ---------------- #
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+# # ---------------- SIGN → TEXT ---------------- #
+# with open("model.pkl", "rb") as f:
+#     model = pickle.load(f)
 
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.7)
-mp_draw = mp.solutions.drawing_utils
+# mp_hands = mp.solutions.hands
+# hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.7)
+# mp_draw = mp.solutions.drawing_utils
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    if "file" not in request.files:
-        return jsonify({"error": "No file found"})
+# @app.route("/predict", methods=["POST"])
+# def predict():
+#     if "file" not in request.files:
+#         return jsonify({"error": "No file found"})
 
-    file = request.files["file"]
-    file_bytes = np.frombuffer(file.read(), np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    results = hands.process(rgb)
+#     file = request.files["file"]
+#     file_bytes = np.frombuffer(file.read(), np.uint8)
+#     img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+#     rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#     results = hands.process(rgb)
 
-    if results.multi_hand_landmarks:
-        handLms = results.multi_hand_landmarks[0]
-        row = []
-        for lm in handLms.landmark:
-            row.extend([lm.x, lm.y, lm.z])
-        features = np.array(row).reshape(1, -1)
-        prediction = model.predict(features)
-        return jsonify({"prediction": str(prediction[0])})
-    else:
-        return jsonify({"error": "No hand detected"})
+#     if results.multi_hand_landmarks:
+#         handLms = results.multi_hand_landmarks[0]
+#         row = []
+#         for lm in handLms.landmark:
+#             row.extend([lm.x, lm.y, lm.z])
+#         features = np.array(row).reshape(1, -1)
+#         prediction = model.predict(features)
+#         return jsonify({"prediction": str(prediction[0])})
+#     else:
+#         return jsonify({"error": "No hand detected"})
 
 # ---------------- TEXT → SIGN ---------------- #
 # English dictionary
@@ -70,20 +70,28 @@ space_sign = "signs/space.png"
 
 # ✅ FULL WORD → SIGN VIDEO (YouTube embed)
 word_video_dict = {
-    "AEROPLANE": "https://www.youtube.com/embed/6M1rP2r672o",
-    "TRAIN": "https://www.youtube.com/embed/6ZaYY0vo6pk",
-    "TICKET": "https://www.youtube.com/embed/nBqeyGg8Kvs",
+    
     "COMPUTER":"https://www.youtube.com/embed/5IDn1RRczUo",
     "TELEVISION": "https://www.youtube.com/embed/ids6uU-p-lk",
   "CAMERA": "https://www.youtube.com/embed/xY5tQfR7BiI",
   "RADIO": "https://www.youtube.com/embed/_BPtLQumNF4",
-  "BOOK": "https://www.youtube.com/embed/l2ytof4d1r0",
-  "BOTTLE": "https://www.youtube.com/embed/zk-I0DPD4gk",
-  "TIFFIN": "https://www.youtube.com/embed/YT1x1wgyjLQ",
-  "APPLE": "https://www.youtube.com/embed/Lu_R01JQky8",
-  "MANGO": "https://www.youtube.com/embed/fcuSg0jzcwI",
-  "DOG": "https://www.youtube.com/embed/r9QQ0jQ64IQ",
-  "BIRD": "https://www.youtube.com/embed/ThLhLlan5Yo",
+  
+  
+  "INTERNET" : "https://www.youtube.com/embed/ZJ8EEQIbBSc",
+  "PRINTER":"https://www.youtube.com/embed/HaZ2JLoHAh8",
+  "KEYBOARD" :"https://www.youtube.com/embed/de37uyDINA",
+  "WEBPAGE" :"https://www.youtube.com/embed/L2DdR6SgBWM",
+  "FILE":"https://www.youtube.com/embed/dmspcOTLMP8",
+  "DOWNLOAD": "https://www.youtube.com/embed/-sjNNrmsuhE",
+  "PRINT": "https://www.youtube.com/embed/KFmena-spwg",
+  "CPU": "https://www.youtube.com/embed/R1FnedbVgG0",
+  "BROWSER" :"https://www.youtube.com/embed/ylY6QTiWso4",
+  "C++": "https://www.youtube.com/embed/Xs-Ek-USzSQ",
+  "AI" :"https://www.youtube.com/embed/W5ljnqcxMB8",
+
+
+  
+  
     # add your own words here
 }
 

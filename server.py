@@ -71,23 +71,36 @@ space_sign = "signs/space.png"
 # ✅ FULL WORD → SIGN VIDEO (YouTube embed)
 word_video_dict = {
     
-    "COMPUTER":"https://www.youtube.com/embed/5IDn1RRczUo",
-    "TELEVISION": "https://www.youtube.com/embed/ids6uU-p-lk",
-  "CAMERA": "https://www.youtube.com/embed/xY5tQfR7BiI",
-  "RADIO": "https://www.youtube.com/embed/_BPtLQumNF4",
+
+  "COMPUTER": "https://www.youtube.com/embed/5IDn1RRczUo?autoplay=1&mute=1&controls=0&loop=1&playlist=5IDn1RRczUo&modestbranding=1",
+
+  "TELEVISION": "https://www.youtube.com/embed/ids6uU-p-lk?autoplay=1&mute=1&controls=0&loop=1&playlist=ids6uU-p-lk&modestbranding=1",
+
+  "CAMERA": "https://www.youtube.com/embed/xY5tQfR7BiI?autoplay=1&mute=1&controls=0&loop=1&playlist=xY5tQfR7BiI&modestbranding=1",
+
+  "RADIO": "https://www.youtube.com/embed/_BPtLQumNF4?autoplay=1&mute=1&controls=0&loop=1&playlist=_BPtLQumNF4&modestbranding=1",
+
+  "INTERNET": "https://www.youtube.com/embed/ZIJJ_GCTRL8?autoplay=1&mute=1&controls=0&start=4&end=26&loop=1&modestbranding=1&playlist=ZIJJ_GCTRL8",
+
+  "PRINTER": "https://www.youtube.com/embed/ko43iBntDQI?autoplay=1&mute=1&controls=0&start=129&end=146&modestbranding=1&playlist=ko43iBntDQI",
+
+  "KEYBOARD": "https://www.youtube.com/embed/Umi1OsYwUbY?autoplay=1&mute=1&controls=0&modestbranding=1&playlist=Umi1OsYwUbY&loop=1",
+
+  "WEBPAGE": "https://www.youtube.com/embed/0j9lSfefFOg?autoplay=1&mute=1&controls=0&start=45&end=69&modestbranding=1&playlist=0j9lSfefFOg&loop=1",
+
+  "FILE": "https://www.youtube.com/embed/4HRdRxrgV74?autoplay=1&mute=1&controls=0&modestbranding=1&playlist=4HRdRxrgV74&loop=1",
+
+  "DOWNLOAD": "https://www.youtube.com/embed/SkQicaMPwa0?autoplay=1&mute=1&controls=0&modestbranding=1&playlist=SkQicaMPwa0&loop=1",
+
+  "PRINT": "https://www.youtube.com/embed/kbeg8D8KFq4?autoplay=1&mute=1&controls=0&start=4&end=8&modestbranding=1&playlist=kbeg8D8KFq4&loop=1",
+
+  "CPU": "https://www.youtube.com/embed/UAhf9nll-5g?autoplay=1&mute=1&controls=0&start=370&end=376&modestbranding=1&playlist=UAhf9nll-5g&loop=1",
+
+  "BROWSER": "https://www.youtube.com/embed/evlsugmzxSs?autoplay=1&mute=1&controls=0&start=47&end=88&modestbranding=1&playlist=evlsugmzxSs&loop=1",
+
+  "C": "https://www.youtube.com/embed/mrVECVa0mRY?autoplay=1&mute=1&controls=0&modestbranding=1&playlist=mrVECVa0mRY&loop=1",
+
   
-  
-  "INTERNET" : "https://www.youtube.com/embed/ZJ8EEQIbBSc",
-  "PRINTER":"https://www.youtube.com/embed/HaZ2JLoHAh8",
-  "KEYBOARD" :"https://www.youtube.com/embed/de37uyDINA",
-  "WEBPAGE" :"https://www.youtube.com/embed/L2DdR6SgBWM",
-  "FILE":"https://www.youtube.com/embed/dmspcOTLMP8",
-  "DOWNLOAD": "https://www.youtube.com/embed/-sjNNrmsuhE",
-  "PRINT": "https://www.youtube.com/embed/KFmena-spwg",
-  "CPU": "https://www.youtube.com/embed/R1FnedbVgG0",
-  "BROWSER" :"https://www.youtube.com/embed/ylY6QTiWso4",
-  "C++": "https://www.youtube.com/embed/Xs-Ek-USzSQ",
-  "AI" :"https://www.youtube.com/embed/W5ljnqcxMB8",
 
 
   
